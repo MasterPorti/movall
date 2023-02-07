@@ -1,24 +1,32 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import ArrowIcon from '../assets/arrowIcon.svg'
 function HomeCarousel (props) {
-  const [next, setNext] = React.useState(0)
-  const [before, setBefore] = React.useState(0)
-
-  const fakedata = [
-    { id: 315162, url: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/faXT8V80JRhnArTAeYXz0Eutpv9.jpg' },
-    { id: 315112, url: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/5pMy5LF2JAleBNBtuzizfCMWM7k.jpg' },
-    { id: 315156, url: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/cU7itLM8qmwMiaNnWsJPQLKe79j.jpg' },
-    { id: 315119, url: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/wQ53sO5n9LCFbssV3oQ4CuajL1L.jpg' },
-    { id: 215162, url: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/faXT8V80JRhnArTAeYXz0Eutpv9.jpg' },
-    { id: 215112, url: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/5pMy5LF2JAleBNBtuzizfCMWM7k.jpg' },
-    { id: 215156, url: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/cU7itLM8qmwMiaNnWsJPQLKe79j.jpg' },
-    { id: 215119, url: 'https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/wQ53sO5n9LCFbssV3oQ4CuajL1L.jpg' }
-  ]
+  const [next, setNext] = useState(0)
+  const [before, setBefore] = useState(0)
+  const [fakedata, setData] = useState([])
+  const [end, setEnd] = useState(false)
 
   useEffect(() => {
-    setNext(fakedata[1].id)
-    setBefore(fakedata[0].id)
+    const getCarousel = async () => {
+      const url = 'https://api.themoviedb.org/3/discover/movie?api_key=f214beaa9396a825bceec073eec20c6a&language=en-US&page=1'
+      const response = await fetch(url)
+      const datafecht = await response.json()
+      const results = await datafecht.results.map(item => {
+        return { id: item.id, url: `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${item.backdrop_path}` }
+      })
+      setData(results)
+      setEnd(true)
+      console.log(results)
+    }
+    getCarousel()
   }, [])
+
+  useEffect(() => {
+    if (end) {
+      setNext(fakedata[1].id)
+      setBefore(fakedata[0].id)
+    }
+  }, [end])
 
   const handleNext = () => {
     if (next !== fakedata[fakedata.length - 1].id) {
@@ -55,7 +63,7 @@ function HomeCarousel (props) {
       </div>
       <div className='hc-container'>
         {fakedata.map((item, index) =>
-          <div className='hc-imgContainer' id={item.id} key={item.id}>
+          <div className='hc-imgContainer' id={item.id} key={item.id + index}>
             <img src={item.url} alt='' className='hc-img' />
           </div>)}
       </div>
