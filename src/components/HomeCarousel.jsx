@@ -12,11 +12,10 @@ function HomeCarousel (props) {
       const response = await fetch(url)
       const datafecht = await response.json()
       const results = await datafecht.results.map(item => {
-        return { id: item.id, url: `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${item.backdrop_path}` }
+        return { id: item.id, url: `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${item.backdrop_path}` }
       })
       setData(results)
       setEnd(true)
-      console.log(results)
     }
     getCarousel()
   }, [])
@@ -47,8 +46,24 @@ function HomeCarousel (props) {
       setNext(fakedata[index].id)
     }
   }
+
   return (
     <>
+      <div className='hc-container'>
+        {fakedata.map((item, index) =>
+          <div
+            style={{
+              backgroundImage: `url(${item.url})`
+            }} className='hc-imgContainer' id={item.id} key={item.id + index}
+          >
+            <div className='hc-titleContainer'>
+              <p className='hc-title'>Black Panther: Wakanda Forever</p>
+              <p>Queen Ramonda, Shuri, M’Baku, Okoye and the Dora Milaje fight to protect their nation from intervening world powers in the wake of King T’Challa’s death.  As the Wakandans strive to embrace their next chapter, the heroes must band together with the help of War Dog Nakia and Everett Ross and forge a new path for the kingdom of Wakanda.</p>
+              <button className='hc-button'>Watch Now</button>
+            </div>
+          </div>)}
+
+      </div>
       <div className='hc-buttonsContainer'>
         <button onClick={handleNext}>
           <a href={`#${next}`}>
@@ -60,12 +75,6 @@ function HomeCarousel (props) {
             <img src={ArrowIcon} alt='before button' className='hc-before' />
           </a>
         </button>
-      </div>
-      <div className='hc-container'>
-        {fakedata.map((item, index) =>
-          <div className='hc-imgContainer' id={item.id} key={item.id + index}>
-            <img src={item.url} alt='' className='hc-img' />
-          </div>)}
       </div>
     </>
   )
